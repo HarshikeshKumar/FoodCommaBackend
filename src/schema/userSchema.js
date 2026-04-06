@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 
 const userSchema = new mongoose.Schema(
   {
@@ -53,6 +54,16 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
   },
 );
+
+// Bcrypt Implementation...................
+userSchema.pre("save", async function () {
+  // console.log("Executing Pre Save Hook.....");
+  // console.log(this); // Purana Password milega
+  const hashedPassword = await bcrypt.hash(this.password, 10);
+  this.password = hashedPassword;
+  // console.log(this); // Password Encrypt ho gaya
+  // console.log("Exitting Pre Save hook....");
+});
 
 const User = mongoose.model("User", userSchema);
 
